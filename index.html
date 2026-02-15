@@ -92,6 +92,7 @@
 const topPlaysMeta = document.getElementById('topPlaysMeta');
 const topPlaysList = document.getElementById('topPlaysList');
 const topPlaysCard = document.getElementById('topPlaysCard');
+const summaryContent = document.getElementById('summaryContent');
 
   let data = [];
 
@@ -140,6 +141,20 @@ const topPlaysCard = document.getElementById('topPlaysCard');
     const rows = parseCSV(text).filter(r => r.length && r.some(x => String(x).trim() !== ""));
     const headers = rows.shift().map(h => h.replace(/\uFEFF/g,'').trim());
     data = rows.map(r => toObj(headers, r));// Build Top Plays list
+    // Build Summary
+const totalGames = data.length;
+const totalBets = data.filter(d => (d.Bet || "").toUpperCase() === "BET").length;
+const totalUnits = data
+  .filter(d => (d.Bet || "").toUpperCase() === "BET")
+  .reduce((sum, d) => sum + (parseFloat(d.Units) || 0), 0);
+const totalTopPlays = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY").length;
+
+summaryContent.innerHTML =
+  `Games: <b>${totalGames}</b> |
+   Bets: <b>${totalBets}</b> |
+   Units Risked: <b>${totalUnits.toFixed(2)}</b> |
+   Top Plays: <b>${totalTopPlays}</b>`;
+
 const tops = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY");
 topPlaysMeta.textContent = tops.length ? `${tops.length} top plays loaded` : "No top plays in this slate";
 topPlaysList.innerHTML = tops.length
