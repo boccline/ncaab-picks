@@ -1,1 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>6+1 Nation — Picks</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 18px; max-width: 820px; }
+    h1 { margin: 0 0 8px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; }
+    label { font-size: 12px; color: #444; display:block; margin-bottom:6px; }
+    select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; }
+    .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 12px; margin-left: 8px; }
+    .big { font-size: 22px; font-weight: 700; margin: 6px 0; }
+    .muted { color: #666; font-size: 13px; }
+    .topplay { border-color: #111; font-weight: 700; }
+    .bet { border-color: #0a7a2f; font-weight: 700; }
+    .nobet { border-color: #b00020; font-weight: 700; }
+    .error { color: #b00020; }
+    .footer { margin-top: 14px; font-size: 12px; color:#666; }
+  </style>
+</head>
+<body>
+  <h1>6+1 Nation — Picks</h1>
+  <div class="muted">Select Team A and Team B. (Loads from <b>picks.csv</b>)</div>
+
+  <div class="row">
+    <div class="card">
+      <label for="teamASel">Team A</label>
+      <select id="teamASel"></select>
+    </div>
+    <div class="card">
+      <label for="teamBSel">Team B</label>
+      <select id="teamBSel"></select>
+    </div>
+  </div>
+
+  <div class="card" id="outCard">
+    <div class="muted" id="outMeta"></div>
+    <div class="big" id="outPick">—</div>
+    <div class="muted" id="outUnits"></div>
+  </div>
+
+  <div class="footer">
+    Daily update: export Excel PUBLISH as <b>picks.csv</b>, then replace <b>picks.csv</b> in this repo.
+  </div>
+
+<script>
+  function parseCSV(text) {
+    const rows = [];
+    let cur = "", inQ = false, row = [];
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const next = text[i + 1];
+      if (ch === '"' && inQ && next === '"') { cur += '"'; i++; continue; }
+      if (ch === '"') { inQ = !inQ; continue; }
+      if (ch === ',' && !inQ) { row.push(cur.trim()); cur = ""; continue; }
+      if ((ch === '\n' || ch === '\r') && !inQ) {
+        if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
+        cur = ""; row = [];
+        if (ch === '\r' && next === '\n') i++;
+        continue;
+      }
+      cur += ch;
+    }
+    if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
+    return rows;
+  }
+
+  function toObj(headers, row) {
+    const o = {};
+    headers.forEach((h, i) => o[h] = (row[i] ?? "").trim());
+    return o;
+  }
+
+  const teamASel = document.getElementById('teamASel');
+  const teamBSel = document.getElementById('teamBSel');
+  const outMeta = document.getElementById('outMeta');
+  const outPick = document.getElementById('outPick');
+  const outUnits = document.getElementById('outUnits');
+
+  let data = [];
+
+  function uniq(arr) {
+    return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+  }
+
+  function findGame(a, b) {
+    // Match either direction (A vs B OR B vs A)
+    return data.find(d => (d.TeamA === a && d.TeamB === b) || (d.TeamA === b && d.TeamB === a)) || null;
+  }
+
+  function render(game, a, b) {
+    if (!a || !b) {
+      outMeta.textContent = "";
+      outPick.textContent = "Select both teams";
+      outUnits.textContent = "";
+      return;
+    }
+    if (!game) {
+      outMeta.textContent = "";
+      outPick.textContent = "Matchup not found in picks.csv";
+      outUnits.textContent = "";
+      return;
+    }
+
+    const bet = (game.Bet || "").toUpperCase() === "BET";
+    const top = (game.TopPlay || "").toUpperCase() === "PLAY";
+
+    outMeta.innerHTML =
+      `<span class="pill ${bet ? "bet" : "nobet"}">${bet ? "BET" : "NO BET"}</span>` +
+      (top ? ` <span class="pill topplay">TOP PLAY</span>` : "");
+
+    outPick.textContent = bet ? `Pick: ${game.Pick || "—"}` : "No bet for this matchup";
+    outUnits.textContent = bet ? `Units: ${game.Units || "—"}` : "";
+  }
+
+  async function init() {
+    const resp = await fetch(`picks.csv?cb=${Date.now()}`);
+    if (!resp.ok) throw new Error("Could not load picks.csv");
+    const text = await resp.text();
+    const rows = parseCSV(text).filter(r => r.length && r.some(x => String(x).trim() !== ""));
+    const headers = rows.shift().map(h => h.replace(/\uFEFF/g,'').trim());
+    data = rows.map(r => toObj(headers, r));
+
+    // Expect headers: TeamA,TeamB,Pick,Bet,Units,TopPlay
+    const teams = uniq(data.flatMap(d => [d.TeamA, d.TeamB]));
+    teamASel.innerHTML = `<option value="">—</option>` + teams.map(t => `<option value="${t}">${t}</option>`).join("");
+    teamBSel.innerHTML = `<option value="">—</option>` + teams.map(t => `<option value="${t}">${t}</option>`).join("");
+
+    function onChange() {
+      const a = teamASel.value;
+      const b = teamBSel.value;
+      render(findGame(a,b), a, b);
+    }
+
+    teamASel.addEventListener('change', onChange);
+    teamBSel.addEventListener('change', onChange);
+
+    render(null, "", "");
+  }
+
+  init().catch(err => {
+    outMeta.textContent = "";
+    outPick.textContent = "Error loading picks.csv";
+    outPick.className = "error big";
+    outUnits.textContent = err.message;
+  });
+</script>
+</body>
+</html>
 
