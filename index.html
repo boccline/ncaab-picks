@@ -84,6 +84,9 @@
   const outMeta = document.getElementById('outMeta');
   const outPick = document.getElementById('outPick');
   const outUnits = document.getElementById('outUnits');
+const topPlaysMeta = document.getElementById('topPlaysMeta');
+const topPlaysList = document.getElementById('topPlaysList');
+const topPlaysCard = document.getElementById('topPlaysCard');
 
   let data = [];
 
@@ -131,7 +134,12 @@
     const text = await resp.text();
     const rows = parseCSV(text).filter(r => r.length && r.some(x => String(x).trim() !== ""));
     const headers = rows.shift().map(h => h.replace(/\uFEFF/g,'').trim());
-    data = rows.map(r => toObj(headers, r));
+    data = rows.map(r => toObj(headers, r));// Build Top Plays list
+const tops = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY");
+topPlaysMeta.textContent = tops.length ? `${tops.length} top plays loaded` : "No top plays in this slate";
+topPlaysList.innerHTML = tops.length
+  ? "<ol>" + tops.map(d => `<li><b>${d.Pick || "—"}</b> — ${((d.Bet||"").toUpperCase()==="BET") ? (d.Units ? d.Units + "u" : "u") : "NO BET"}</li>`).join("") + "</ol>"
+  : "<div>(none)</div>";
 
     // Expect headers: TeamA,TeamB,Pick,Bet,Units,TopPlay
     const teams = uniq(data.flatMap(d => [d.TeamA, d.TeamB]));
