@@ -92,29 +92,33 @@
   }
 
   function render(game, a, b) {
-    if (!a || !b) {
-      outMeta.textContent = "";
-      outPick.textContent = "Select both teams";
-      outUnits.textContent = "";
-      return;
-    }
-    if (!game) {
-      outMeta.textContent = "";
-      outPick.textContent = "Matchup not found in picks.csv";
-      outUnits.textContent = "";
-      return;
-    }
-
-    const bet = (game.Bet || "").toUpperCase() === "BET";
-    const top = (game.TopPlay || "").toUpperCase() === "PLAY";
-
-    outMeta.innerHTML =
-      `<span class="pill ${bet ? "bet" : "nobet"}">${bet ? "BET" : "NO BET"}</span>` +
-      (top ? ` <span class="pill topplay">TOP PLAY</span>` : "");
-
-    outPick.textContent = bet ? `Pick: ${game.Pick || "—"}` : "No bet for this matchup";
-    outUnits.textContent = bet ? `Units: ${game.Units || "—"}` : "";
+  if (!a || !b) {
+    outMeta.textContent = "";
+    outPick.textContent = "Select both teams";
+    outUnits.textContent = "";
+    return;
   }
+
+  if (!game) {
+    outMeta.textContent = "";
+    outPick.textContent = "Matchup not found in picks.csv";
+    outUnits.textContent = "";
+    return;
+  }
+
+  const bet = (game.Bet || "").toUpperCase() === "BET";
+  const top = (game.TopPlay || "").toUpperCase() === "PLAY";
+
+  outMeta.innerHTML =
+    `<span class="pill ${bet ? "bet" : "nobet"}">${bet ? "BET" : "NO BET"}</span>` +
+    (top ? ` <span class="pill topplay">TOP PLAY</span>` : "");
+
+  // ALWAYS show model prediction
+  outPick.textContent = `Model: ${game.Pick || "—"}`;
+
+  // Only show units if it's a bet
+  outUnits.textContent = bet ? `Units: ${game.Units || "—"}` : "";
+}
 
   async function init() {
     const resp = await fetch(`picks.csv?cb=${Date.now()}`);
@@ -138,7 +142,7 @@
     teamASel.addEventListener('change', onChange);
     teamBSel.addEventListener('change', onChange);
 
-    render(null, "", "");
+    (null, "", "");
   }
 
   init().catch(err => {
