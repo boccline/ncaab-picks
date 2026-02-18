@@ -5,55 +5,265 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>6+1 Nation — Picks</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 18px; max-width: 820px; }
-    h1 { margin: 0 0 8px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; }
-    label { font-size: 12px; color: #444; display:block; margin-bottom:6px; }
-    select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; }
-    .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 12px; margin-left: 8px; }
-    .big { font-size: 22px; font-weight: 700; margin: 6px 0; }
-    .muted { color: #666; font-size: 13px; }
-    .topplay { border-color: #111; font-weight: 700; }
-    .bet { border-color: #0a7a2f; font-weight: 700; }
-    .nobet { border-color: #b00020; font-weight: 700; }
-    .error { color: #b00020; }
-    .footer { margin-top: 14px; font-size: 12px; color:#666; }
+    :root{
+      --bg:#0b0f16;
+      --panel:#101826;
+      --panel2:#0f1724;
+      --border:rgba(255,255,255,.10);
+      --text:#e8eefc;
+      --muted:rgba(232,238,252,.72);
+      --muted2:rgba(232,238,252,.55);
+      --accent:#6ea8ff;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#fbbf24;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(110,168,255,.18), transparent 60%),
+        radial-gradient(1000px 600px at 90% 0%, rgba(34,197,94,.10), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 40px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:.2px;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(110,168,255,.15);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 860px){
+      .grid{ grid-template-columns: 1.1fr .9fr; }
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .cardTitle{
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      margin: 0 0 8px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    @media (min-width: 860px){
+      .row{ grid-template-columns: 1fr 1fr; }
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted2);
+      margin-bottom: 6px;
+      letter-spacing:.2px;
+    }
+
+    select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,36,.9);
+      color: var(--text);
+      outline: none;
+    }
+    select:focus{
+      border-color: rgba(110,168,255,.55);
+      box-shadow: 0 0 0 4px rgba(110,168,255,.15);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .pillStrong{ color: var(--text); }
+
+    .pill.bet{
+      border-color: rgba(34,197,94,.55);
+      background: rgba(34,197,94,.10);
+      color: rgba(210,255,228,.95);
+    }
+    .pill.nobet{
+      border-color: rgba(239,68,68,.55);
+      background: rgba(239,68,68,.10);
+      color: rgba(255,220,220,.95);
+    }
+    .pill.topplay{
+      border-color: rgba(251,191,36,.55);
+      background: rgba(251,191,36,.10);
+      color: rgba(255,243,205,.95);
+      font-weight:700;
+    }
+
+    .big{
+      font-size: 22px;
+      font-weight: 800;
+      margin: 8px 0 4px;
+      letter-spacing:.2px;
+    }
+
+    .muted{ color: var(--muted); font-size: 13px; }
+    .mutedSm{ color: var(--muted2); font-size: 12px; }
+
+    .out{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+    }
+
+    .line{
+      height:1px;
+      background: rgba(255,255,255,.08);
+      margin: 10px 0;
+    }
+
+    ol{
+      margin: 10px 0 0 18px;
+      padding: 0;
+    }
+    li{ margin: 8px 0; }
+    b{ color: var(--text); }
+
+    .error { color: #ff8b8b; }
+
+    .footer{
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted2);
+      text-align:center;
+    }
+
+    .kpi{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .kpi .pill{ padding: 8px 10px; }
   </style>
 </head>
 <body>
-  <h1>6+1 Nation — Picks</h1>
-  <div class="card" id="summaryCard">
-  <div class="big">Today's Summary</div>
-  <div id="summaryContent" class="muted"></div>
-</div>
-
-  <div class="muted">Select Team A and Team B. (Loads from <b>picks.csv</b>)</div>
-
-  <div class="row">
-    <div class="card">
-      <label for="teamASel">Team A</label>
-      <select id="teamASel"></select>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">
+        <h1>6+1 Nation — Picks</h1>
+        <div class="sub">Select Team A and Team B. Data loads from <b>picks.csv</b>.</div>
+      </div>
+      <div class="badge"><span class="dot"></span> Live from GitHub Pages</div>
     </div>
-    <div class="card">
-      <label for="teamBSel">Team B</label>
-      <select id="teamBSel"></select>
+
+    <div class="grid">
+      <div class="card" id="summaryCard">
+        <div class="cardTitle">Today’s Summary</div>
+        <div id="summaryContent" class="muted"></div>
+        <div class="kpi" id="kpis"></div>
+      </div>
+
+      <div class="card" id="topPlaysCard">
+        <div class="cardTitle">Top Plays</div>
+        <div class="mutedSm" id="topPlaysMeta"></div>
+        <div id="topPlaysList" class="muted"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="card" id="outCard">
-    <div class="muted" id="outMeta"></div>
-    <div class="big" id="outPick">—</div>
-    <div class="muted" id="outUnits"></div>
-  </div>
-<div class="card" id="topPlaysCard">
-  <div class="big">Top Plays</div>
-  <div class="muted" id="topPlaysMeta"></div>
-  <div id="topPlaysList" class="muted"></div>
-</div>
+    <div class="row">
+      <div class="card">
+        <label for="teamASel">Team A</label>
+        <select id="teamASel"></select>
+      </div>
+      <div class="card">
+        <label for="teamBSel">Team B</label>
+        <select id="teamBSel"></select>
+      </div>
+    </div>
 
-  <div class="footer">
-    Daily update: export Excel PUBLISH as <b>picks.csv</b>, then replace <b>picks.csv</b> in this repo.
+    <div class="card" id="outCard">
+      <div class="out">
+        <div id="outMeta"></div>
+        <div class="big" id="outPick">—</div>
+        <div class="muted" id="outUnits"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Daily update: export Excel PUBLISH as <b>picks.csv</b>, then replace <b>picks.csv</b> in this repo.
+    </div>
   </div>
 
 <script>
@@ -89,10 +299,10 @@
   const outMeta = document.getElementById('outMeta');
   const outPick = document.getElementById('outPick');
   const outUnits = document.getElementById('outUnits');
-const topPlaysMeta = document.getElementById('topPlaysMeta');
-const topPlaysList = document.getElementById('topPlaysList');
-const topPlaysCard = document.getElementById('topPlaysCard');
-const summaryContent = document.getElementById('summaryContent');
+  const topPlaysMeta = document.getElementById('topPlaysMeta');
+  const topPlaysList = document.getElementById('topPlaysList');
+  const summaryContent = document.getElementById('summaryContent');
+  const kpis = document.getElementById('kpis');
 
   let data = [];
 
@@ -101,38 +311,33 @@ const summaryContent = document.getElementById('summaryContent');
   }
 
   function findGame(a, b) {
-    // Match either direction (A vs B OR B vs A)
     return data.find(d => (d.TeamA === a && d.TeamB === b) || (d.TeamA === b && d.TeamB === a)) || null;
   }
 
   function render(game, a, b) {
-  if (!a || !b) {
-    outMeta.textContent = "";
-    outPick.textContent = "Select both teams";
-    outUnits.textContent = "";
-    return;
+    if (!a || !b) {
+      outMeta.innerHTML = "";
+      outPick.textContent = "Select both teams";
+      outUnits.textContent = "";
+      return;
+    }
+    if (!game) {
+      outMeta.innerHTML = "";
+      outPick.textContent = "Matchup not found in picks.csv";
+      outUnits.textContent = "";
+      return;
+    }
+
+    const bet = (game.Bet || "").toUpperCase() === "BET";
+    const top = (game.TopPlay || "").toUpperCase() === "PLAY";
+
+    outMeta.innerHTML =
+      `<span class="pill ${bet ? "bet" : "nobet"} pillStrong">${bet ? "BET" : "NO BET"}</span>` +
+      (top ? ` <span class="pill topplay">TOP PLAY</span>` : "");
+
+    outPick.textContent = `Model: ${game.Pick || "—"}`;
+    outUnits.textContent = bet ? `Units: ${game.Units || "—"}` : "";
   }
-
-  if (!game) {
-    outMeta.textContent = "";
-    outPick.textContent = "Matchup not found in picks.csv";
-    outUnits.textContent = "";
-    return;
-  }
-
-  const bet = (game.Bet || "").toUpperCase() === "BET";
-  const top = (game.TopPlay || "").toUpperCase() === "PLAY";
-
-  outMeta.innerHTML =
-    `<span class="pill ${bet ? "bet" : "nobet"}">${bet ? "BET" : "NO BET"}</span>` +
-    (top ? ` <span class="pill topplay">TOP PLAY</span>` : "");
-
-  // ALWAYS show model prediction
-  outPick.textContent = `Model: ${game.Pick || "—"}`;
-
-  // Only show units if it's a bet
-  outUnits.textContent = bet ? `Units: ${game.Units || "—"}` : "";
-}
 
   async function init() {
     const resp = await fetch(`picks.csv?cb=${Date.now()}`);
@@ -140,28 +345,30 @@ const summaryContent = document.getElementById('summaryContent');
     const text = await resp.text();
     const rows = parseCSV(text).filter(r => r.length && r.some(x => String(x).trim() !== ""));
     const headers = rows.shift().map(h => h.replace(/\uFEFF/g,'').trim());
-    data = rows.map(r => toObj(headers, r));// Build Top Plays list
-    // Build Summary
-const totalGames = data.length;
-const totalBets = data.filter(d => (d.Bet || "").toUpperCase() === "BET").length;
-const totalUnits = data
-  .filter(d => (d.Bet || "").toUpperCase() === "BET")
-  .reduce((sum, d) => sum + (parseFloat(d.Units) || 0), 0);
-const totalTopPlays = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY").length;
+    data = rows.map(r => toObj(headers, r));
 
-summaryContent.innerHTML =
-  `Games: <b>${totalGames}</b> |
-   Bets: <b>${totalBets}</b> |
-   Units Risked: <b>${totalUnits.toFixed(2)}</b> |
-   Top Plays: <b>${totalTopPlays}</b>`;
+    const totalGames = data.length;
+    const totalBets = data.filter(d => (d.Bet || "").toUpperCase() === "BET").length;
+    const totalUnits = data
+      .filter(d => (d.Bet || "").toUpperCase() === "BET")
+      .reduce((sum, d) => sum + (parseFloat(d.Units) || 0), 0);
+    const totalTopPlays = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY").length;
 
-const tops = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY");
-topPlaysMeta.textContent = tops.length ? `${tops.length} top plays loaded` : "No top plays in this slate";
-topPlaysList.innerHTML = tops.length
-  ? "<ol>" + tops.map(d => `<li><b>${d.Pick || "—"}</b> — ${((d.Bet||"").toUpperCase()==="BET") ? (d.Units ? d.Units + "u" : "u") : "NO BET"}</li>`).join("") + "</ol>"
-  : "<div>(none)</div>";
+    summaryContent.innerHTML =
+      `Games loaded: <b>${totalGames}</b>`;
 
-    // Expect headers: TeamA,TeamB,Pick,Bet,Units,TopPlay
+    kpis.innerHTML = `
+      <span class="pill"><b>Bets</b>: ${totalBets}</span>
+      <span class="pill"><b>Units</b>: ${totalUnits.toFixed(2)}</span>
+      <span class="pill"><b>Top Plays</b>: ${totalTopPlays}</span>
+    `;
+
+    const tops = data.filter(d => (d.TopPlay || "").toUpperCase() === "PLAY");
+    topPlaysMeta.textContent = tops.length ? `${tops.length} top plays loaded` : "No top plays in this slate";
+    topPlaysList.innerHTML = tops.length
+      ? "<ol>" + tops.map(d => `<li><b>${d.Pick || "—"}</b> — ${((d.Bet||"").toUpperCase()==="BET") ? (d.Units ? d.Units + "u" : "u") : "NO BET"}</li>`).join("") + "</ol>"
+      : "<div class='muted'>(none)</div>";
+
     const teams = uniq(data.flatMap(d => [d.TeamA, d.TeamB]));
     teamASel.innerHTML = `<option value="">—</option>` + teams.map(t => `<option value="${t}">${t}</option>`).join("");
     teamBSel.innerHTML = `<option value="">—</option>` + teams.map(t => `<option value="${t}">${t}</option>`).join("");
@@ -175,11 +382,11 @@ topPlaysList.innerHTML = tops.length
     teamASel.addEventListener('change', onChange);
     teamBSel.addEventListener('change', onChange);
 
-    (null, "", "");
+    render(null, "", "");
   }
 
   init().catch(err => {
-    outMeta.textContent = "";
+    outMeta.innerHTML = "";
     outPick.textContent = "Error loading picks.csv";
     outPick.className = "error big";
     outUnits.textContent = err.message;
@@ -187,4 +394,3 @@ topPlaysList.innerHTML = tops.length
 </script>
 </body>
 </html>
-
