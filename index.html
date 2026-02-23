@@ -12,6 +12,9 @@
       --muted:rgba(232,238,252,.72);
       --muted2:rgba(232,238,252,.55);
       --accent:#a855f7; /* purple */
+      --good:#22c55e;
+      --bad:#ef4444;
+      --gold:#f59e0b;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --radius:16px;
     }
@@ -25,10 +28,10 @@
         var(--bg);
       color:var(--text);
     }
-    .wrap{ max-width: 980px; margin: 0 auto; padding: 22px 16px 40px; }
+    .wrap{ max-width: 1120px; margin: 0 auto; padding: 22px 16px 48px; }
     .header{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px; }
     h1{ margin:0; font-size: 22px; letter-spacing:.2px; }
-    .sub{ color:var(--muted); font-size: 13px; line-height: 1.2; }
+    .sub{ color:var(--muted); font-size: 13px; line-height: 1.25; }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding: 8px 12px; border: 1px solid var(--border);
@@ -46,7 +49,10 @@
       padding: 14px;
     }
     .row{ display:grid; grid-template-columns: 1fr; gap:12px; margin: 12px 0; }
-    @media (min-width: 860px){ .row{ grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 980px){ .row{ grid-template-columns: 1.2fr .8fr; } }
+    .grid3{ display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 980px){ .grid3{ grid-template-columns: 1fr 1fr 1fr; } }
+
     label{ display:block; font-size: 12px; color: var(--muted2); margin-bottom: 6px; letter-spacing:.2px; }
     select{
       width:100%; padding: 12px 12px; border-radius: 14px;
@@ -56,19 +62,71 @@
       outline: none;
     }
     select:focus{ border-color: rgba(168,85,247,.55); box-shadow: 0 0 0 4px rgba(168,85,247,.16); }
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding: 7px 10px; border-radius: 999px;
       border: 1px solid var(--border);
       font-size: 12px; color: var(--muted);
       background: rgba(255,255,255,.03);
+      margin-right: 8px; margin-bottom: 8px;
     }
     .pill.bet{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.10); color: rgba(210,255,228,.95); }
     .pill.nobet{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.10); color: rgba(255,220,220,.95); }
+    .pill.grand{ border-color: rgba(245,158,11,.75); background: rgba(245,158,11,.12); color: rgba(255,237,213,.98); }
+    .pill.high{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.10); color: rgba(210,255,228,.95); }
+    .pill.mid{ border-color: rgba(168,85,247,.55); background: rgba(168,85,247,.12); color: rgba(240,228,255,.98); }
+    .pill.low{ border-color: rgba(148,163,184,.35); background: rgba(148,163,184,.08); color: rgba(232,238,252,.80); }
+
     .big{ font-size: 22px; font-weight: 800; margin: 8px 0 4px; letter-spacing:.2px; }
     .muted{ color: var(--muted); font-size: 13px; }
     .error { color: #ff8b8b; }
-    .footer{ margin-top: 14px; font-size: 12px; color: var(--muted2); text-align:center; }
+
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin: 6px 0 10px;
+    }
+    .sectionTitle h2{
+      margin:0; font-size: 14px; letter-spacing:.25px; text-transform: uppercase;
+      color: rgba(232,238,252,.86);
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      font-size: 13px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th{
+      font-size: 12px;
+      color: var(--muted2);
+      letter-spacing:.2px;
+      background: rgba(255,255,255,.03);
+      user-select: none;
+    }
+    tr:last-child td{ border-bottom: none; }
+    .right{ text-align:right; }
+    .footer{ margin-top: 16px; font-size: 12px; color: var(--muted2); text-align:center; }
+
+    .hero{
+      border: 1px solid rgba(245,158,11,.35);
+      background: radial-gradient(900px 380px at 15% 0%, rgba(245,158,11,.10), transparent 60%),
+                  linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    }
+    .miniGrid{ display:grid; grid-template-columns: 1fr; gap:10px; }
+    @media (min-width: 860px){ .miniGrid{ grid-template-columns: 1fr 1fr; } }
+    .miniCard{ border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: rgba(255,255,255,.02); }
+    .miniTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 8px; }
+    .miniTitle b{ font-size: 12px; letter-spacing:.25px; text-transform: uppercase; color: rgba(232,238,252,.86); }
   </style>
 </head>
 <body>
@@ -79,36 +137,98 @@
           <img src="logo.png" alt="6+1 Nation Logo" style="width:90px; height:90px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.45);" />
           <div>
             <h1>6+1 Nation — Picks</h1>
-            <div class="sub">Select Team A then Team B. Loads from <b>picks.csv</b>.</div>
+            <div class="sub">Tier board + matchup lookup. Loads from <b>picks.csv</b> (export <b>PUBLISH</b> tab).</div>
           </div>
         </div>
       </div>
       <div class="badge"><span class="dot"></span> Live from GitHub Pages</div>
     </div>
 
-    <div class="card" style="margin-bottom:12px;">
-      <div class="muted" id="summaryContent"></div>
-    </div>
-
     <div class="row">
       <div class="card">
-        <label for="teamASel">Team A</label>
-        <select id="teamASel"></select>
+        <div class="muted" id="summaryContent"></div>
       </div>
       <div class="card">
-        <label for="teamBSel">Team B</label>
-        <select id="teamBSel"></select>
+        <div class="muted" style="margin-bottom:8px;">Quick filters</div>
+        <div class="miniGrid">
+          <div class="miniCard">
+            <div class="miniTitle"><b>Show</b></div>
+            <select id="showSel">
+              <option value="ALL">All games</option>
+              <option value="BET">Only BET</option>
+            </select>
+          </div>
+          <div class="miniCard">
+            <div class="miniTitle"><b>League</b></div>
+            <select id="leagueSel">
+              <option value="ALL">All</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="card" id="outCard">
-      <div id="outMeta"></div>
-      <div class="big" id="outPick">—</div>
-      <div class="muted" id="outUnits"></div>
+    <!-- GRAND TIER -->
+    <div class="card hero" style="margin-bottom:12px;">
+      <div class="sectionTitle">
+        <h2>Grand Tier — Hammer Plays</h2>
+        <div class="badge" id="grandCountBadge">—</div>
+      </div>
+      <div id="grandTableWrap"></div>
+    </div>
+
+    <div class="grid3">
+      <!-- ML TIERS -->
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>ML tiers</h2>
+          <div class="badge" id="mlBadge">—</div>
+        </div>
+        <div id="mlHigh"></div>
+        <div style="height:10px;"></div>
+        <div id="mlMid"></div>
+        <div style="height:10px;"></div>
+        <div id="mlLow"></div>
+      </div>
+
+      <!-- ATS TIERS -->
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>ATS tiers</h2>
+          <div class="badge" id="atsBadge">—</div>
+        </div>
+        <div id="atsHigh"></div>
+        <div style="height:10px;"></div>
+        <div id="atsMid"></div>
+        <div style="height:10px;"></div>
+        <div id="atsLow"></div>
+      </div>
+
+      <!-- MATCHUP LOOKUP -->
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>Matchup lookup</h2>
+          <div class="badge">Find any game</div>
+        </div>
+
+        <label for="teamASel">Team A</label>
+        <select id="teamASel"></select>
+
+        <div style="height:10px;"></div>
+
+        <label for="teamBSel">Team B</label>
+        <select id="teamBSel"></select>
+
+        <div class="card" id="outCard" style="margin-top:12px;">
+          <div id="outMeta"></div>
+          <div class="big" id="outPick">—</div>
+          <div class="muted" id="outUnits"></div>
+        </div>
+      </div>
     </div>
 
     <div class="footer">
-      Daily update: export Excel PUBLISH as <b>picks.csv</b>, then replace <b>picks.csv</b> in this repo.
+      Daily update: export Excel <b>PUBLISH</b> as <b>picks.csv</b>, then replace <b>picks.csv</b> in this repo.
     </div>
   </div>
 
@@ -144,6 +264,130 @@
     return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b));
   }
 
+  function pctNum(v) {
+    // accepts "83", "83%", "0.83" -> number in 0..100
+    if (!v) return 0;
+    const s = String(v).trim();
+    const cleaned = s.endsWith('%') ? s.slice(0,-1) : s;
+    const n = Number(cleaned);
+    if (!isFinite(n)) return 0;
+    // If it looks like 0.xx, treat as fraction
+    if (n <= 1 && s.includes('.')) return n * 100;
+    return n;
+  }
+
+  function pillTier(t) {
+    const u = (t || "").toUpperCase();
+    if (u === "GRAND") return `<span class="pill grand">GRAND</span>`;
+    if (u === "HIGH")  return `<span class="pill high">HIGH</span>`;
+    if (u === "MID")   return `<span class="pill mid">MID</span>`;
+    if (u === "LOW")   return `<span class="pill low">LOW</span>`;
+    return "";
+  }
+
+  function pillBet(bet) {
+    const isBet = (bet || "").toUpperCase() === "BET";
+    return `<span class="pill ${isBet ? "bet" : "nobet"}">${isBet ? "BET" : "NO BET"}</span>`;
+  }
+
+  function safeText(v){ return (v ?? "").toString(); }
+
+  function rowKey(d) {
+    return `${safeText(d.TeamA)}__${safeText(d.TeamB)}`;
+  }
+
+  function renderMainTable(rows) {
+    if (!rows.length) return `<div class="muted">No games.</div>`;
+
+    const body = rows.map(d => {
+      const mlc = pctNum(d.MLConf);
+      const atsc = pctNum(d.ATSConf);
+      const isGrand = (d.GrandTier || "").toUpperCase() === "GRAND";
+
+      return `
+        <tr>
+          <td style="width:180px;">
+            ${pillBet(d.Bet)}
+            ${isGrand ? `<span class="pill grand">GRAND</span>` : ``}
+          </td>
+          <td>
+            <b>${d.TeamA || "—"}</b> vs <b>${d.TeamB || "—"}</b>
+            <div class="muted">${d.League || ""}${d.Date ? " • " + d.Date : ""}</div>
+          </td>
+          <td>
+            <b>${d.Pick || "—"}</b>
+            <div class="muted">${d.Notes || ""}</div>
+          </td>
+          <td class="right" style="width:90px;">${d.Odds || "—"}</td>
+          <td class="right" style="width:160px;">
+            ${mlc ? `${mlc.toFixed(0)}%` : "—"} ${pillTier(d.MLTier)}
+          </td>
+          <td class="right" style="width:160px;">
+            ${atsc ? `${atsc.toFixed(0)}%` : "—"} ${pillTier(d.ATSTier)}
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Matchup</th>
+            <th>Pick</th>
+            <th class="right">Odds</th>
+            <th class="right">ML</th>
+            <th class="right">ATS</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    `;
+  }
+
+  function renderMini(label, rows, sortBy) {
+    const count = rows.length;
+    const head = `
+      <div class="miniTitle" style="margin-bottom:8px;">
+        <div>${pillTier(label)}</div>
+        <div class="badge">${count} games</div>
+      </div>
+    `;
+    if (!rows.length) return head + `<div class="muted">No games.</div>`;
+
+    const sorted = [...rows].sort((a,b)=>sortBy(b)-sortBy(a)).slice(0, 25);
+
+    const body = sorted.map(d => {
+      const mlc = pctNum(d.MLConf);
+      const atsc = pctNum(d.ATSConf);
+      return `
+        <tr>
+          <td style="width:84px;">${pillBet(d.Bet)}</td>
+          <td><b>${d.TeamA}</b> vs <b>${d.TeamB}</b></td>
+          <td class="right" style="width:80px;">${d.Odds || "—"}</td>
+          <td class="right" style="width:70px;">${mlc ? mlc.toFixed(0)+"%" : "—"}</td>
+          <td class="right" style="width:70px;">${atsc ? atsc.toFixed(0)+"%" : "—"}</td>
+        </tr>
+      `;
+    }).join("");
+
+    return head + `
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Matchup</th>
+            <th class="right">Odds</th>
+            <th class="right">ML%</th>
+            <th class="right">ATS%</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    `;
+  }
+
   const teamASel = document.getElementById('teamASel');
   const teamBSel = document.getElementById('teamBSel');
   const outMeta = document.getElementById('outMeta');
@@ -151,23 +395,39 @@
   const outUnits = document.getElementById('outUnits');
   const summaryContent = document.getElementById('summaryContent');
 
-  let data = [];
+  const showSel = document.getElementById('showSel');
+  const leagueSel = document.getElementById('leagueSel');
+
+  const grandTableWrap = document.getElementById('grandTableWrap');
+  const grandCountBadge = document.getElementById('grandCountBadge');
+
+  const mlHighEl = document.getElementById('mlHigh');
+  const mlMidEl = document.getElementById('mlMid');
+  const mlLowEl = document.getElementById('mlLow');
+  const atsHighEl = document.getElementById('atsHigh');
+  const atsMidEl = document.getElementById('atsMid');
+  const atsLowEl = document.getElementById('atsLow');
+
+  const mlBadge = document.getElementById('mlBadge');
+  const atsBadge = document.getElementById('atsBadge');
+
+  let allData = [];
+  let viewData = [];
 
   function findGame(a, b) {
-    return data.find(d =>
+    return viewData.find(d =>
       (d.TeamA === a && d.TeamB === b) ||
       (d.TeamA === b && d.TeamB === a)
     ) || null;
   }
 
-  function render(game, a, b) {
+  function renderLookup(game, a, b) {
     if (!a || !b) {
       outMeta.innerHTML = "";
       outPick.textContent = "Select both teams";
       outUnits.textContent = "";
       return;
     }
-
     if (!game) {
       outMeta.innerHTML = "";
       outPick.textContent = "Matchup not found";
@@ -175,10 +435,17 @@
       return;
     }
 
-    const bet = (game.Bet || "").toUpperCase() === "BET";
-    outMeta.innerHTML = `<span class="pill ${bet ? "bet" : "nobet"}">${bet ? "BET" : "NO BET"}</span>`;
+    const mlc = pctNum(game.MLConf);
+    const atsc = pctNum(game.ATSConf);
+    const isGrand = (game.GrandTier || "").toUpperCase() === "GRAND";
+
+    outMeta.innerHTML =
+      `${pillBet(game.Bet)}` +
+      `${isGrand ? `<span class="pill grand">GRAND</span>` : ""}` +
+      `${pillTier(game.MLTier)}${pillTier(game.ATSTier)}`;
+
     outPick.textContent = game.Pick || "—";
-    outUnits.textContent = "";
+    outUnits.textContent = `ML: ${mlc ? mlc.toFixed(0)+"%" : "—"} • ATS: ${atsc ? atsc.toFixed(0)+"%" : "—"} • Odds: ${game.Odds || "—"} • ${game.League || ""}${game.Date ? " • "+game.Date : ""}`;
   }
 
   function setTeamBOptions(selectedA) {
@@ -188,7 +455,7 @@
     }
 
     const opps = uniq(
-      data.flatMap(d => {
+      viewData.flatMap(d => {
         if (d.TeamA === selectedA) return [d.TeamB];
         if (d.TeamB === selectedA) return [d.TeamA];
         return [];
@@ -200,6 +467,81 @@
       opps.map(t => `<option value="${t}">${t}</option>`).join("");
   }
 
+  function applyFilters() {
+    const showMode = showSel.value;      // ALL or BET
+    const leagueMode = leagueSel.value;  // ALL or league string
+
+    viewData = allData.filter(d => {
+      const betOk = (showMode === "ALL") || ((d.Bet || "").toUpperCase() === "BET");
+      const leagueOk = (leagueMode === "ALL") || ((d.League || "") === leagueMode);
+      return betOk && leagueOk;
+    });
+
+    // Summary
+    const totalRows = viewData.length;
+    const totalBets = viewData.filter(d => (d.Bet || "").toUpperCase() === "BET").length;
+    const leagues = uniq(viewData.map(d => d.League)).join(", ");
+    const dates = uniq(viewData.map(d => d.Date));
+    const dateLabel = dates.length === 1 ? dates[0] : (dates.length ? `${dates[0]} … ${dates[dates.length-1]}` : "—");
+
+    summaryContent.innerHTML =
+      `Loaded: <b>${totalRows}</b> matchups | Bets flagged: <b>${totalBets}</b> | League: <b>${leagues || "—"}</b> | Date: <b>${dateLabel}</b>`;
+
+    // GRAND
+    const grand = viewData
+      .filter(d => (d.GrandTier || "").toUpperCase() === "GRAND")
+      .sort((a,b)=>pctNum(b.MLConf)-pctNum(a.MLConf));
+    grandCountBadge.textContent = `${grand.length} games`;
+    grandTableWrap.innerHTML = renderMainTable(grand);
+
+    // ML tiers
+    const mlHigh = viewData.filter(d => (d.MLTier||"").toUpperCase()==="HIGH");
+    const mlMid  = viewData.filter(d => (d.MLTier||"").toUpperCase()==="MID");
+    const mlLow  = viewData.filter(d => (d.MLTier||"").toUpperCase()==="LOW");
+    mlBadge.textContent = `H:${mlHigh.length} • M:${mlMid.length} • L:${mlLow.length}`;
+
+    mlHighEl.innerHTML = `<div class="miniCard">${renderMini("HIGH", mlHigh, (x)=>pctNum(x.MLConf))}</div>`;
+    mlMidEl.innerHTML  = `<div class="miniCard">${renderMini("MID",  mlMid,  (x)=>pctNum(x.MLConf))}</div>`;
+    mlLowEl.innerHTML  = `<div class="miniCard">${renderMini("LOW",  mlLow,  (x)=>pctNum(x.MLConf))}</div>`;
+
+    // ATS tiers
+    const atsHigh = viewData.filter(d => (d.ATSTier||"").toUpperCase()==="HIGH");
+    const atsMid  = viewData.filter(d => (d.ATSTier||"").toUpperCase()==="MID");
+    const atsLow  = viewData.filter(d => (d.ATSTier||"").toUpperCase()==="LOW");
+    atsBadge.textContent = `H:${atsHigh.length} • M:${atsMid.length} • L:${atsLow.length}`;
+
+    atsHighEl.innerHTML = `<div class="miniCard">${renderMini("HIGH", atsHigh, (x)=>pctNum(x.ATSConf))}</div>`;
+    atsMidEl.innerHTML  = `<div class="miniCard">${renderMini("MID",  atsMid,  (x)=>pctNum(x.ATSConf))}</div>`;
+    atsLowEl.innerHTML  = `<div class="miniCard">${renderMini("LOW",  atsLow,  (x)=>pctNum(x.ATSConf))}</div>`;
+
+    // Matchup lookup dropdowns
+    const teams = uniq(viewData.flatMap(d => [d.TeamA, d.TeamB]));
+    const curA = teamASel.value;
+    const curB = teamBSel.value;
+
+    teamASel.innerHTML =
+      `<option value="">—</option>` +
+      teams.map(t => `<option value="${t}">${t}</option>`).join("");
+
+    // Preserve selection if still valid
+    if (teams.includes(curA)) teamASel.value = curA; else teamASel.value = "";
+    setTeamBOptions(teamASel.value);
+
+    // Preserve B if still valid
+    const opps = uniq(
+      viewData.flatMap(d => {
+        if (d.TeamA === teamASel.value) return [d.TeamB];
+        if (d.TeamB === teamASel.value) return [d.TeamA];
+        return [];
+      })
+    );
+    if (opps.includes(curB)) teamBSel.value = curB; else teamBSel.value = "";
+
+    const a = teamASel.value;
+    const b = teamBSel.value;
+    renderLookup(findGame(a, b), a, b);
+  }
+
   async function init() {
     const resp = await fetch(`picks.csv?cb=${Date.now()}`);
     if (!resp.ok) throw new Error("Could not load picks.csv");
@@ -207,41 +549,40 @@
     const text = await resp.text();
     const rows = parseCSV(text).filter(r => r.length && r.some(x => String(x).trim() !== ""));
     const headers = rows.shift().map(h => h.replace(/\uFEFF/g,'').trim());
-    data = rows.map(r => toObj(headers, r));
 
-    // basic summary
-    const totalRows = data.length;
-    const totalBets = data.filter(d => (d.Bet || "").toUpperCase() === "BET").length;
-    summaryContent.innerHTML = `Loaded: <b>${totalRows}</b> matchups | Bets: <b>${totalBets}</b>`;
+    allData = rows
+      .map(r => toObj(headers, r))
+      .filter(d => (d.TeamA || "").trim() && (d.TeamB || "").trim());
 
-    // Team A dropdown = all teams in slate
-    const teams = uniq(data.flatMap(d => [d.TeamA, d.TeamB]));
-    teamASel.innerHTML =
-      `<option value="">—</option>` +
-      teams.map(t => `<option value="${t}">${t}</option>`).join("");
+    // League dropdown
+    const leagues = uniq(allData.map(d => d.League).filter(Boolean));
+    leagueSel.innerHTML =
+      `<option value="ALL">All</option>` +
+      leagues.map(l => `<option value="${l}">${l}</option>`).join("");
+
+    // Filters listeners
+    showSel.addEventListener('change', applyFilters);
+    leagueSel.addEventListener('change', applyFilters);
 
     teamASel.addEventListener('change', () => {
       const a = teamASel.value;
       setTeamBOptions(a);
       teamBSel.value = "";
-      render(null, "", "");
+      renderLookup(null, "", "");
     });
 
     teamBSel.addEventListener('change', () => {
       const a = teamASel.value;
       const b = teamBSel.value;
-      render(findGame(a, b), a, b);
+      renderLookup(findGame(a, b), a, b);
     });
 
-    setTeamBOptions("");
-    render(null, "", "");
+    applyFilters();
   }
 
   init().catch(err => {
-    outMeta.innerHTML = "";
-    outPick.textContent = "Error loading picks.csv";
-    outPick.className = "error big";
-    outUnits.textContent = err.message;
+    grandTableWrap.innerHTML = `<div class="error big">Error loading picks.csv</div><div class="muted">${err.message}</div>`;
+    summaryContent.innerHTML = `<span class="error">Export PUBLISH tab as picks.csv and upload it to the repo.</span>`;
   });
 </script>
 </body>
